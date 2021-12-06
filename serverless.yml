@@ -1,0 +1,67 @@
+service:
+  name: orders-rest-api
+
+plugins: 
+  - serverless-offline
+  - serverless-plugin-typescript  
+  - serverless-domain-manager
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  memorySize: 256
+  stage: ${opt:stage, 'dev'}
+  region: ap-south-1
+  profile: serverless-admin
+  environment:
+    ORDERS_TABLE_NAME: ${self:custom.OrdersTable.name} 
+    ORDERS_BUCKET_NAME: ${self:custom.OrdersBucket.name}
+  iam: 
+   role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: arn:aws:dynamodb:ap-south-1:670022476151:table/Brand-dev 
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+          Resource: arn:aws:s3:::${self:custom.OrdersBucket.name}/* 
+
+resources:
+  Resources:
+    OrdersTable: ${file(infra/resources/dynamodb.yml):OrdersTable}
+    OrdersBucket: ${file(infra/resources/s3.yml):OrdersBucket}
+    OrdersBucketPolicy: ${file(infra/resources/s3.yml):OrdersBucketPolicy}
+    
+functions:
+  createorder:
+    handler: app/handlers/createOrder.handler
+    events:
+      - http:
+          method: POST
+          path: /order
+          cors: true 
+
+custom: 
+  stage: ${opt:stage, self:provider.stage}
+  domains: 
+    dev: api.migobucks.com
+    # prod: api.migobucks.com 
+  BrandTable:
+    name: !Ref OrdersTable
+    arn: !GetAtt OrdersTable.Arn 
+  BrandBucket:
+    name: orders-rest-api-${self:provider.stage} 
+  customDomain:
+    domainName: ${self:custom.domains.${self:custom.stage}}
+    basePath: 'orders'
+    stage: dev 
+    createRoute53Record: true 
+  bundle:
+    linting: false

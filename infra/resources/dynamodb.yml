@@ -1,0 +1,62 @@
+OrdersTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: Orders-${self:provider.stage}
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: OrderId
+        AttributeType: S
+      - AttributeName: OrderStatus
+        AttributeType: S
+      - AttributeName: UserId
+        AttributeType: S
+      - AttributeName: UserType
+        AttributeType: L
+      - AttributeName: ProductId
+        AttributeType: S
+      - AttributeName: PinCode
+        AttributeType: N
+      - AttributeName: CreatedDate
+        AttributeType: S
+      - AttributeName: PaymentId
+        AttributeType: S
+      -  AttributeName: TraceId
+        AttributeType: S
+    KeySchema:
+      - AttributeName: OrderId
+        KeyType: HASH
+      - AttributeName: PaymentId
+        KeyType: RANGE
+    LocalSecondaryIndexes:
+      - IndexName: OrderIdAndUserId
+        KeySchema:
+          - AttributeName: OrderId
+            KeyType: HASH
+          - AttributeName: UserId
+            KeyType: RANGE 
+        Projection:
+            ProjectionType: ALL 
+      - IndexName: OrderIdAndProductId
+        KeySchema:
+          - AttributeName: OrderId
+            KeyType: HASH
+          - AttributeName: ProductId
+            KeyType: RANGE 
+        Projection:
+            ProjectionType: ALL 
+      - IndexName: OrderIdAndCreatedDated
+        KeySchema:
+          - AttributeName: OrderId
+            KeyType: HASH
+          - AttributeName: CreatedDate
+            KeyType: RANGE 
+        Projection:
+            ProjectionType: ALL  
+      - IndexName: OrderIdAndTraceId
+        KeySchema:
+          - AttributeName: OrderId
+            KeyType: HASH
+          - AttributeName: TraceId
+            KeyType: RANGE 
+        Projection:
+            ProjectionType: ALL 
