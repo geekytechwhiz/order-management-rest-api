@@ -9,6 +9,7 @@ import commonMidleware from "../utils/commonMidleware";
 const createBrand = async (event: any, context: any) => {
   const { brandName } = event.body;
   let orderRegstermodel: OrderDetailsResponseModel = JSON.parse(event.body);
+  let traceId=JSON.parse(event.headers)
   console.info("Request Event", event);
   console.info("Request Body", event.body);
   const OrderId = "OR" + new Date().getTime().toString();

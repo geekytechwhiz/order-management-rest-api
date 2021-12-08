@@ -40,6 +40,14 @@ resources:
     OrdersBucketPolicy: ${file(infra/resources/s3.yml):OrdersBucketPolicy}
     
 functions:
+  functions:
+  orderHealthCheck:
+    handler: app/handlers/health.handler
+    events:
+      - http:
+          method: GET
+          path: /health
+          cors: true
   createorder:
     handler: app/handlers/createOrder.handler
     events:

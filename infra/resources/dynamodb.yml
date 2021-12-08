@@ -10,29 +10,25 @@ OrdersTable:
         AttributeType: S
       - AttributeName: UserId
         AttributeType: S
-      - AttributeName: UserType
+      - AttributeName: BrandId
         AttributeType: L
       - AttributeName: ProductId
         AttributeType: S
-      - AttributeName: PinCode
+      - AttributeName: CustomerId
         AttributeType: N
       - AttributeName: CreatedDate
-        AttributeType: S
-      - AttributeName: PaymentId
-        AttributeType: S
-      -  AttributeName: TraceId
         AttributeType: S
     KeySchema:
       - AttributeName: OrderId
         KeyType: HASH
-      - AttributeName: PaymentId
+      - AttributeName: CustomerId
         KeyType: RANGE
     LocalSecondaryIndexes:
-      - IndexName: OrderIdAndUserId
+      - IndexName: OrderIdAndOrderStatus
         KeySchema:
           - AttributeName: OrderId
             KeyType: HASH
-          - AttributeName: UserId
+          - AttributeName: OrderStatus
             KeyType: RANGE 
         Projection:
             ProjectionType: ALL 
@@ -44,7 +40,7 @@ OrdersTable:
             KeyType: RANGE 
         Projection:
             ProjectionType: ALL 
-      - IndexName: OrderIdAndCreatedDated
+      - IndexName: OrderIdAndCreatedDate
         KeySchema:
           - AttributeName: OrderId
             KeyType: HASH
@@ -52,11 +48,11 @@ OrdersTable:
             KeyType: RANGE 
         Projection:
             ProjectionType: ALL  
-      - IndexName: OrderIdAndTraceId
+      - IndexName: OrderIdAndBrandId
         KeySchema:
           - AttributeName: OrderId
             KeyType: HASH
-          - AttributeName: TraceId
+          - AttributeName: BrandId
             KeyType: RANGE 
         Projection:
             ProjectionType: ALL 
