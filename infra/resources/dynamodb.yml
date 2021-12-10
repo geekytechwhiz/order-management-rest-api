@@ -8,14 +8,12 @@ OrdersTable:
         AttributeType: S
       - AttributeName: OrderStatus
         AttributeType: S
-      - AttributeName: UserId
-        AttributeType: S
       - AttributeName: BrandId
-        AttributeType: L
+        AttributeType: S
       - AttributeName: ProductId
         AttributeType: S
       - AttributeName: CustomerId
-        AttributeType: N
+        AttributeType: S
       - AttributeName: CreatedDate
         AttributeType: S
     KeySchema:
@@ -53,6 +51,14 @@ OrdersTable:
           - AttributeName: OrderId
             KeyType: HASH
           - AttributeName: BrandId
+            KeyType: RANGE 
+        Projection:
+            ProjectionType: ALL 
+      - IndexName: OrderIdAndCustomerId
+        KeySchema:
+          - AttributeName: OrderId
+            KeyType: HASH
+          - AttributeName: CustomerId
             KeyType: RANGE 
         Projection:
             ProjectionType: ALL 

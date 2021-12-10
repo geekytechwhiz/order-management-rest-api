@@ -7,9 +7,9 @@ import { SaveOrder } from "../services/saveOrder";
 import commonMidleware from "../utils/commonMidleware";
 
 const createBrand = async (event: any, context: any) => {
-  const { brandName } = event.body;
+ 
   let orderRegstermodel: OrderDetailsResponseModel = JSON.parse(event.body);
-  let traceId=JSON.parse(event.headers)
+  let headers=event.headers
   console.info("Request Event", event);
   console.info("Request Body", event.body);
   const OrderId = "OR" + new Date().getTime().toString();
@@ -19,13 +19,12 @@ const createBrand = async (event: any, context: any) => {
 
   const orderRequest: any = {
     OrderId: OrderId,
+    CustomerId:orderRegstermodel.CustomerId,
     UserId: orderRegstermodel.UserId,
-    TraceId: orderRegstermodel.TraceId,
+    TraceId: headers['TraceId'],
     DeliveryMode: orderRegstermodel.DeliveryMode,
-
     UserType: orderRegstermodel.UserType,
     PaymentId:orderRegstermodel.PaymentId,
-
     DeliveryAddress: orderRegstermodel.DeliveryAddress,
     ProductType: orderRegstermodel.ProductType,
     CreatedAt: now.toISOString(),
