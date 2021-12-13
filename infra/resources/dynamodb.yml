@@ -8,31 +8,25 @@ OrdersTable:
         AttributeType: S
       - AttributeName: OrderStatus
         AttributeType: S
-      - AttributeName: UserId
+      - AttributeName: BrandId
         AttributeType: S
-      - AttributeName: UserType
-        AttributeType: L
       - AttributeName: ProductId
         AttributeType: S
-      - AttributeName: PinCode
-        AttributeType: N
+      - AttributeName: CustomerId
+        AttributeType: S
       - AttributeName: CreatedDate
-        AttributeType: S
-      - AttributeName: PaymentId
-        AttributeType: S
-      -  AttributeName: TraceId
         AttributeType: S
     KeySchema:
       - AttributeName: OrderId
         KeyType: HASH
-      - AttributeName: PaymentId
+      - AttributeName: CustomerId
         KeyType: RANGE
     LocalSecondaryIndexes:
-      - IndexName: OrderIdAndUserId
+      - IndexName: OrderIdAndOrderStatus
         KeySchema:
           - AttributeName: OrderId
             KeyType: HASH
-          - AttributeName: UserId
+          - AttributeName: OrderStatus
             KeyType: RANGE 
         Projection:
             ProjectionType: ALL 
@@ -44,7 +38,7 @@ OrdersTable:
             KeyType: RANGE 
         Projection:
             ProjectionType: ALL 
-      - IndexName: OrderIdAndCreatedDated
+      - IndexName: OrderIdAndCreatedDate
         KeySchema:
           - AttributeName: OrderId
             KeyType: HASH
@@ -52,11 +46,19 @@ OrdersTable:
             KeyType: RANGE 
         Projection:
             ProjectionType: ALL  
-      - IndexName: OrderIdAndTraceId
+      - IndexName: OrderIdAndBrandId
         KeySchema:
           - AttributeName: OrderId
             KeyType: HASH
-          - AttributeName: TraceId
+          - AttributeName: BrandId
+            KeyType: RANGE 
+        Projection:
+            ProjectionType: ALL 
+      - IndexName: OrderIdAndCustomerId
+        KeySchema:
+          - AttributeName: OrderId
+            KeyType: HASH
+          - AttributeName: CustomerId
             KeyType: RANGE 
         Projection:
             ProjectionType: ALL 

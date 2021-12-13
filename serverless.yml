@@ -27,7 +27,7 @@ provider:
             - dynamodb:PutItem
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
-          Resource: arn:aws:dynamodb:ap-south-1:670022476151:table/Brand-dev 
+          Resource: arn:aws:dynamodb:ap-south-1:670022476151:table/Orders-dev 
         - Effect: Allow
           Action:
             - s3:PutObject
@@ -40,6 +40,13 @@ resources:
     OrdersBucketPolicy: ${file(infra/resources/s3.yml):OrdersBucketPolicy}
     
 functions:
+  orderHealthCheck:
+    handler: app/handlers/health.handler
+    events:
+      - http:
+          method: GET
+          path: /health
+          cors: true
   createorder:
     handler: app/handlers/createOrder.handler
     events:
@@ -47,16 +54,37 @@ functions:
           method: POST
           path: /order
           cors: true 
+  getorder:
+    handler: app/handlers/getOrder.handler
+    events:
+      - http:
+          method: GET
+          path: /order/{OrderId}
+          cors: true
+  getorderbybrand:
+    handler: app/handlers/getOrdersByBrand.handler
+    events:
+      - http:
+          method: GET
+          path: /brand/order/{BrandId}
+          cors: true
+  getorderbycustomer:
+    handler: app/handlers/getOrdersByCustomer.handler
+    events:
+      - http:
+          method: GET
+          path: /customer/order/{CustomerId}
+          cors: true
 
 custom: 
   stage: ${opt:stage, self:provider.stage}
   domains: 
     dev: api.migobucks.com
     # prod: api.migobucks.com 
-  BrandTable:
+  OrdersTable:
     name: !Ref OrdersTable
     arn: !GetAtt OrdersTable.Arn 
-  BrandBucket:
+  OrdersBucket:
     name: orders-rest-api-${self:provider.stage} 
   customDomain:
     domainName: ${self:custom.domains.${self:custom.stage}}
