@@ -75,6 +75,13 @@ functions:
           method: GET
           path: /customer/order/{CustomerId}
           cors: true
+  patchOrderStatus:
+    handler: app/handlers/updateOrderStatus.handler
+    events:
+      - http:
+          path: order/updatStatus
+          method: patch
+          cors: true
 
 custom: 
   stage: ${opt:stage, self:provider.stage}
