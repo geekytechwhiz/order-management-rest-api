@@ -30,7 +30,6 @@ const createBrand = async (event: any, context: any) => {
     CreatedAt: now.toISOString(),
     UpdatedAt: now.toISOString(),
     OrderStatus: "Pending",
-    BrandId:orderRegstermodel.BrandId
   };
   let response = await SaveOrder(orderRequest);
   return {
