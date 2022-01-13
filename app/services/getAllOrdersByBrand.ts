@@ -1,7 +1,6 @@
 import { documentClient, dynamoDB } from "../utils/config";
 import createError from "http-errors";
 import { OrdersTable } from "../utils/constants";
-import AWS from "aws-sdk";
 
 
 
@@ -11,15 +10,15 @@ export const getAllBrandOrders = async (params) => {
         let query = {
           Statement: `SELECT * FROM "${OrdersTable}" where BrandId = '${params}'`,
         };
-        var result = await dynamoDB.executeStatement(query).promise();
-        var converted = result.Items.map((el) =>
-        AWS.DynamoDB.Converter.unmarshall(el)
-          );
+        var result = await dynamoDB.executeStatement(query).promise()
 
       } catch (error: any) {
         console.error(error);
         throw new createError.InternalServerError(error);
       }
-      return(converted);
+      return {
+        statusCode: 200,
+        body: JSON.stringify(result),
+      };
     };
     
