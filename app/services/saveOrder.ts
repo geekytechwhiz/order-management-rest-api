@@ -20,9 +20,6 @@ export const SaveOrder = async (orderRequest: any) => {
     console.error(error);
     throw new createError.InternalServerError(error);
   }
-  return {
-    statusCode: 200,
-    body: JSON.stringify(orderRequest),
-  };
+  return (orderRequest)
 };
  
