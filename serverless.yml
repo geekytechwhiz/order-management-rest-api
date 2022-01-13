@@ -92,4 +92,4 @@ custom:
     stage: dev 
     createRoute53Record: true 
   bundle:
-    linting: false
+    linting: false 
