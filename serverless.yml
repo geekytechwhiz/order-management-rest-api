@@ -66,14 +66,14 @@ functions:
     events:
       - http:
           method: GET
-          path: /brand/order/{BrandId}
+          path: /brand/{BrandId}
           cors: true
   getorderbycustomer:
     handler: app/handlers/getOrdersByCustomer.handler
     events:
       - http:
           method: GET
-          path: /customer/order/{CustomerId}
+          path: /customer/{CustomerId}
           cors: true
   patchOrderStatus:
     handler: app/handlers/updateOrderStatus.handler

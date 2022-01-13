@@ -15,6 +15,7 @@ export class OrderDetailsResponseModel {
   PaymentId:string;
   TraceId:string;
   CustomerId:string;
+  BrandId:string;
 }
 // export class OrderDataResponseModel {
 //   Requested: ProductTypeResponseModel;
