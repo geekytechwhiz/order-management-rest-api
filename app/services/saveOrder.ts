@@ -22,7 +22,7 @@ export const SaveOrder = async (orderRequest: any) => {
   }
   return {
     statusCode: 200,
-    body: JSON.stringify(orderRequest),
+    body:orderRequest,
   };
 };
  

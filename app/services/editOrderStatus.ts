@@ -39,6 +39,6 @@ export const editOrderStatus = async (orderStatusrequest: any) => {
   }
   return {
     statusCode: 200,
-    body: JSON.stringify(orderStatusrequest),
+    body:orderStatusrequest,
   };
 };
