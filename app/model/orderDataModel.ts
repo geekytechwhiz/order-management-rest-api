@@ -4,17 +4,17 @@ export class OrderDetailsResponseModel {
   DeliveryAddress: DeliveryAddress;
   DeliveryMode: string;
   UserId: string;
-  UserType:Array<string>;
+  UserType: Array<string>;
   PaymentMode: string;
   ProductDetails: ProductDetails;
   ProductType: string;
-  CreatedDate: string;
-  LastUpdatedDate: string;
+  CreatedAt: string;
+  UpdatedAt: string;
   OrderStatus: string;
   CustomerDetails: UserDetails;
-  PaymentId:string;
-  TraceId:string;
-  CustomerId:string;
+  PaymentId: string;
+  TraceId: string;
+  CustomerId: string;
 }
 // export class OrderDataResponseModel {
 //   Requested: ProductTypeResponseModel;

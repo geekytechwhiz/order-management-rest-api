@@ -19,16 +19,16 @@ const createBrand = async (event: any, context: any) => {
 
   const orderRequest: any = {
     OrderId: OrderId,
-    CustomerId:orderRegstermodel.CustomerId,
+    CustomerId: orderRegstermodel.CustomerId,
     UserId: orderRegstermodel.UserId,
-    TraceId: headers['TraceId'],
+    TraceId: headers["TraceId"],
     DeliveryMode: orderRegstermodel.DeliveryMode,
     UserType: orderRegstermodel.UserType,
-    PaymentId:orderRegstermodel.PaymentId,
+    PaymentId: orderRegstermodel.PaymentId,
     DeliveryAddress: orderRegstermodel.DeliveryAddress,
     ProductType: orderRegstermodel.ProductType,
-    CreatedAt: now.toISOString(),
-    UpdatedAt: now.toISOString(),
+    CreatedAt: now.toLocaleString(),
+    UpdatedAt: now.toLocaleString(),
     OrderStatus: "Pending",
   };
   let response = await SaveOrder(orderRequest);

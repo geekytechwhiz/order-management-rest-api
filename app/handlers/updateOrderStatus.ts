@@ -11,12 +11,13 @@ const updateOrderStatus = async (event: any) => {
   console.info("Request Event", event);
   console.info("Request Body", event.body);
   let orderStatusModel: updateOrderStatusModel = JSON.parse(event.body);
-  const now = new Date().toISOString();
+  const now = new Date();
+
   const orderStatusrequest = {
     OrderId: orderStatusModel.OrderId,
     CustomerId: orderStatusModel.CustomerId,
     OrderStatus: orderStatusModel.OrderStatus,
-    LastUpdatedDate: now,
+    UpdatedAt: now.toLocaleString(),
   };
   let response = await editOrderStatus(orderStatusrequest);
   return {
