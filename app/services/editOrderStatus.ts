@@ -12,14 +12,14 @@ export const editOrderStatus = async (orderStatusrequest: any) => {
       },
       ExpressionAttributeNames: {
         "#OrderStatus": "OrderStatus",
-        "#LastUpdatedDate": "UpdatedAt",
+        "#UpdatedAt": "UpdatedAt",
       },
       ExpressionAttributeValues: {
         ":OrderStatus": orderStatusrequest.OrderStatus,
-        ":LastUpdatedDate": orderStatusrequest.LastUpdatedDate,
+        ":UpdatedAt": orderStatusrequest.UpdatedAt,
       },
       UpdateExpression:
-        "SET #OrderStatus = :OrderStatus, #LastUpdatedDate = :LastUpdatedDate",
+        "SET #OrderStatus = :OrderStatus, #UpdatedAt = :UpdatedAt",
       ReturnValues: "ALL_NEW",
     };
 
