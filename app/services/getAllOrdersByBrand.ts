@@ -1,4 +1,4 @@
-import { documentClient, dynamoDB } from "../utils/config";
+import { dynamoDB } from "../utils/config";
 import createError from "http-errors";
 import { OrdersTable } from "../utils/constants";
 import AWS from "aws-sdk";
