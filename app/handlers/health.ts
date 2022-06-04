@@ -1,13 +1,6 @@
-import commonMidleware from "../utils/commonMidleware";
+import { ResponseBuilder } from '../utils/helper';
 
-export const healthCheck= async(event:any, context:any)=> { 
-
-  let respose = {status:true, message: "Order Api Health Check Passed"}
-  return {
-    statusCode: 200,
-    body: JSON.stringify(respose),
-  };
-}
-
- export const handler = commonMidleware(healthCheck);
-    
+export const healthCheck = async () => {
+  let response = { status: true, message: 'Order Api Health Check Passed' };
+  return ResponseBuilder(response, 200);
+};

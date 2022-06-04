@@ -1,13 +1,13 @@
-import { documentClient } from '../utils/config';
-import { ORDERS_TABLE } from '../utils/constants';
 import createError from 'http-errors';
+import { documentClient } from '../utils/config';
+import { RETURNS_TABLE } from '../utils/constants';
 
-export const editOrderStatus = async (orderStatusRequest: any) => {
+export const editReturns = async (orderStatusRequest: any) => {
   try {
     const params = {
-      TableName: ORDERS_TABLE,
+      TableName: RETURNS_TABLE,
       Key: {
-        OrderId: orderStatusRequest.OrderId,
+        ReturnOrderId: orderStatusRequest.ReturnOrderId,
         CustomerId: orderStatusRequest.CustomerId,
       },
       ExpressionAttributeNames: {
@@ -31,7 +31,7 @@ export const editOrderStatus = async (orderStatusRequest: any) => {
     console.info(`Edit Order Begins: String request - ${strBody}`);
     console.info(`Edit Order - ${params}`);
     console.info(
-      `Edit Order Begins: Service Table - ${ORDERS_TABLE}'-'${orderStatusRequest.OrderId}`
+      `Edit Order Begins: Service Table - ${RETURNS_TABLE}'-'${orderStatusRequest.OrderId}`
     );
 
     const res = await documentClient.update(params).promise();

@@ -1,11 +1,13 @@
-import { UpdateOrderModel } from '../model/updateOrderStatusModel';
-import { editOrderStatus } from '../services/editOrderStatus';
+import createError from 'http-errors';
+import { ReturnOrderModel } from '../model/returnOrderModel';
+import { SaveReturns } from '../services/saveReturnOrders';
+import { ORDER_STATUS_RETURN } from '../utils/constants';
 import {
   MakeHeaderRequest,
   ResponseBuilder,
   ValidateHeader,
 } from '../utils/helper';
-import { ValidateUpdateOrder } from '../utils/validator';
+import { ValidatePostReturnOrder } from '../utils/validator';
 
 export const handler = async (event: any) => {
   try {
@@ -29,40 +31,41 @@ export const handler = async (event: any) => {
         event.body
       )} TraceId: ${headerRequest.TraceId}`
     );
-    console.info('Request Event', event);
+    if (!event.body) {
+      const err = new createError.NotFound('Body Missing');
+      return ResponseBuilder(err, 400);
+    }
+    let requestBody: ReturnOrderModel = JSON.parse(event.body);
     console.info('Request Body', event.body);
-    let orderStatusModel: UpdateOrderModel = JSON.parse(event.body);
-    const validate = ValidateUpdateOrder(orderStatusModel);
+    const now = new Date();
+    const validate = ValidatePostReturnOrder(requestBody);
     if (!validate.isValid) {
       return ResponseBuilder(validate.message, 400);
     }
-    const now = new Date().toISOString();
-    const result = await Promise.all(
-      orderStatusModel.Orders.map(async (model) => {
+
+    const response = await Promise.all(
+      requestBody.Orders.map(async (request) => {
         try {
-          const orderStatusRequest = {
-            OrderId: model.OrderId,
-            CustomerId: model.CustomerId,
-            OrderStatus: model.OrderStatus,
-            HandoverTime: model.HandoverTime,
-            LastUpdatedDate: now,
-            TrackingId: model.TrackingId,
-          };
-          return await editOrderStatus(orderStatusRequest);
+          const returnId = 'ROR' + new Date().getTime().toString();
+          request['ReturnOrderId'] = returnId;
+          request['ReturnDate'] = now.toISOString();
+          request['CreatedDate'] = now.toISOString();
+          request['UpdatedAt'] = now.toISOString();
+          request['OrderStatus'] = ORDER_STATUS_RETURN;
+          return await SaveReturns(request);
         } catch (err) {
           console.log(err);
           throw err;
         }
       })
     );
-
     console.info(
       `Response Body: ${{
         statusCode: 200,
-        body: JSON.stringify(result),
+        body: JSON.stringify(response),
       }} Method: POST Action:createBrand `
     );
-    return ResponseBuilder(result, 200);
+    return ResponseBuilder(response, 200);
   } catch (error: any) {
     console.info(
       `Error: Path: ${event.path}, Method:${

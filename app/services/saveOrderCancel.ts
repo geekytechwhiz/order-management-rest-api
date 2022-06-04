@@ -1,22 +1,22 @@
 import createError from 'http-errors';
 import { documentClient } from '../utils/config';
-import { ORDERS_TABLE } from '../utils/constants';
+import { CANCELLED_TABLE } from '../utils/constants';
 
-export const SaveOrder = async (orderRequest: any) => {
+export const SaveOrderCancel = async (orderRequest: any) => {
   try {
     console.info(
-      `Request: Method: POST Name: SaveOrder: String request - ${JSON.stringify(
+      `Request: Method: POST Name: SaveOrderCancel: String request - ${JSON.stringify(
         orderRequest
       )}`
     );
     await documentClient
       .put({
-        TableName: ORDERS_TABLE,
+        TableName: CANCELLED_TABLE,
         Item: orderRequest,
       })
       .promise();
 
-    console.info('Save Brand Service End:', orderRequest);
+    console.info('Save Order :', orderRequest);
 
     return {
       statusCode: 200,

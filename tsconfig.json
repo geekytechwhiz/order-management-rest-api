@@ -1,17 +1,36 @@
-
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+    "incremental": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
     "esModuleInterop": true,
-    "lib": ["esnext"],
+    "lib": [
+      "esnext"
+    ],
     "module": "commonjs",
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "lib",
     "sourceMap": true,
-    "target": "esnext"
+    "target": "esnext",
+    "forceConsistentCasingInFileNames": true
   },
-  "exclude": ["node_modules"],
-  "types": ["node", "aws-sdk"]
+  "exclude": [
+    "node_modules",
+    ".serverless/**/*",
+    ".webpack/**/*",
+    ".vscode/**/*",
+    "*.config.js",
+    "**/*.js"
+  ],
+  "include": [
+    "./**/*.ts"
+  ],
+  "types": [
+    "node",
+    "aws-sdk"
+  ]
 }

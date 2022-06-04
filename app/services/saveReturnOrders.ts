@@ -1,8 +1,8 @@
 import createError from 'http-errors';
 import { documentClient } from '../utils/config';
-import { ORDERS_TABLE } from '../utils/constants';
+import { RETURNS_TABLE } from '../utils/constants';
 
-export const SaveOrder = async (orderRequest: any) => {
+export const SaveReturns = async (orderRequest: any) => {
   try {
     console.info(
       `Request: Method: POST Name: SaveOrder: String request - ${JSON.stringify(
@@ -11,7 +11,7 @@ export const SaveOrder = async (orderRequest: any) => {
     );
     await documentClient
       .put({
-        TableName: ORDERS_TABLE,
+        TableName: RETURNS_TABLE,
         Item: orderRequest,
       })
       .promise();

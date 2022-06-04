@@ -27,38 +27,167 @@ OrdersTable:
           - AttributeName: OrderId
             KeyType: HASH
           - AttributeName: OrderStatus
-            KeyType: RANGE 
+            KeyType: RANGE
         Projection:
-            ProjectionType: ALL 
+          ProjectionType: ALL
       - IndexName: OrderIdAndProductId
         KeySchema:
           - AttributeName: OrderId
             KeyType: HASH
           - AttributeName: ProductId
-            KeyType: RANGE 
+            KeyType: RANGE
         Projection:
-            ProjectionType: ALL 
+          ProjectionType: ALL
       - IndexName: OrderIdAndCreatedDate
         KeySchema:
           - AttributeName: OrderId
             KeyType: HASH
           - AttributeName: CreatedDate
-            KeyType: RANGE 
+            KeyType: RANGE
         Projection:
-            ProjectionType: ALL  
+          ProjectionType: ALL
       - IndexName: OrderIdAndBrandId
         KeySchema:
           - AttributeName: OrderId
             KeyType: HASH
           - AttributeName: BrandId
-            KeyType: RANGE 
+            KeyType: RANGE
         Projection:
-            ProjectionType: ALL 
+          ProjectionType: ALL
       - IndexName: OrderIdAndCustomerId
         KeySchema:
           - AttributeName: OrderId
             KeyType: HASH
           - AttributeName: CustomerId
-            KeyType: RANGE 
+            KeyType: RANGE
         Projection:
-            ProjectionType: ALL 
+          ProjectionType: ALL
+
+ReturnsTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: Returns-${self:provider.stage}
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: ReturnOrderId
+        AttributeType: S
+      - AttributeName: OrderStatus
+        AttributeType: S
+      - AttributeName: BrandId
+        AttributeType: S
+      - AttributeName: ProductId
+        AttributeType: S
+      - AttributeName: CustomerId
+        AttributeType: S
+      - AttributeName: ReturnDate
+        AttributeType: S
+    KeySchema:
+      - AttributeName: ReturnOrderId
+        KeyType: HASH
+      - AttributeName: CustomerId
+        KeyType: RANGE
+    LocalSecondaryIndexes:
+      - IndexName: OrderIdAndOrderStatus
+        KeySchema:
+          - AttributeName: ReturnOrderId
+            KeyType: HASH
+          - AttributeName: OrderStatus
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: OrderIdAndProductId
+        KeySchema:
+          - AttributeName: ReturnOrderId
+            KeyType: HASH
+          - AttributeName: ProductId
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: OrderIdAndCreatedDate
+        KeySchema:
+          - AttributeName: ReturnOrderId
+            KeyType: HASH
+          - AttributeName: ReturnDate
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: OrderIdAndBrandId
+        KeySchema:
+          - AttributeName: ReturnOrderId
+            KeyType: HASH
+          - AttributeName: BrandId
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: OrderIdAndCustomerId
+        KeySchema:
+          - AttributeName: ReturnOrderId
+            KeyType: HASH
+          - AttributeName: CustomerId
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+CancelledTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: Cancelled-${self:provider.stage}
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: OrderId
+        AttributeType: S
+      - AttributeName: OrderStatus
+        AttributeType: S
+      - AttributeName: BrandId
+        AttributeType: S
+      - AttributeName: ProductId
+        AttributeType: S
+      - AttributeName: CustomerId
+        AttributeType: S
+      - AttributeName: CancelledDate
+        AttributeType: S
+    KeySchema:
+      - AttributeName: OrderId
+        KeyType: HASH
+      - AttributeName: CustomerId
+        KeyType: RANGE
+    LocalSecondaryIndexes:
+      - IndexName: OrderIdAndOrderStatus
+        KeySchema:
+          - AttributeName: OrderId
+            KeyType: HASH
+          - AttributeName: OrderStatus
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: OrderIdAndProductId
+        KeySchema:
+          - AttributeName: OrderId
+            KeyType: HASH
+          - AttributeName: ProductId
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: OrderIdAndCancelledDate
+        KeySchema:
+          - AttributeName: OrderId
+            KeyType: HASH
+          - AttributeName: CancelledDate
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: OrderIdAndBrandId
+        KeySchema:
+          - AttributeName: OrderId
+            KeyType: HASH
+          - AttributeName: BrandId
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: OrderIdAndCustomerId
+        KeySchema:
+          - AttributeName: OrderId
+            KeyType: HASH
+          - AttributeName: CustomerId
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL

@@ -1,41 +1,70 @@
-import middy from "@middy/core";
-import cors from "@middy/http-cors";
-import { v4 as uuid } from "uuid";
-import { OrderDetailsResponseModel } from "../model/orderDataModel";
-// import { createOrderchema } from "../schemas/createOrderchema";
-import { SaveOrder } from "../services/saveOrder";
-import commonMidleware from "../utils/commonMidleware";
+import createError from 'http-errors';
+import { OrderDetailsResponseModel } from '../model/orderDataModel';
+import { SaveOrder } from '../services/saveOrder';
+import { ORDER_STATUS_LIST } from '../utils/constants';
+import {
+  MakeHeaderRequest,
+  ResponseBuilder,
+  ValidateHeader,
+} from '../utils/helper';
+import { ValidatePostOrder } from '../utils/validator';
 
-const createBrand = async (event: any, context: any) => {
- 
-  let orderRegstermodel: OrderDetailsResponseModel = JSON.parse(event.body);
-  let headers=event.headers
-  console.info("Request Event", event);
-  console.info("Request Body", event.body);
-  const OrderId = "OR" + new Date().getTime().toString();
-  const now = new Date();
-  const endDate = new Date();
-  endDate.setHours(now.getHours() + 1);
+export const handler = async (event: any) => {
+  try {
+    console.info(
+      `Request Body: ${JSON.stringify(
+        event.body
+      )} Method: POST Action:CreateOrder `
+    );
 
-  const orderRequest: any = {
-    OrderId: OrderId,
-    CustomerId:orderRegstermodel.CustomerId,
-    UserId: orderRegstermodel.UserId,
-    TraceId: headers['TraceId'],
-    DeliveryMode: orderRegstermodel.DeliveryMode,
-    UserType: orderRegstermodel.UserType,
-    PaymentId:orderRegstermodel.PaymentId,
-    DeliveryAddress: orderRegstermodel.DeliveryAddress,
-    ProductType: orderRegstermodel.ProductType,
-    CreatedAt: now.toISOString(),
-    UpdatedAt: now.toISOString(),
-    OrderStatus: "Pending",
-  };
-  let response = await SaveOrder(orderRequest);
-  return {
-    statusCode: 200,
-    body: JSON.stringify(response),
-  };
+    let validateResponse = ValidateHeader(event['headers']);
+
+    if (!validateResponse.Status) {
+      return ResponseBuilder(validateResponse, 400);
+    }
+
+    const headerRequest: any = MakeHeaderRequest(event['headers']);
+    console.info(
+      `Request: Path: ${event.path}, Method:${
+        event.httpMethod
+      } Headers:${JSON.stringify(event.headers)}, Body:${JSON.stringify(
+        event.body
+      )} TraceId: ${headerRequest.TraceId}`
+    );
+    if (!event.body) {
+      const err = new createError.NotFound('Body Missing');
+      return ResponseBuilder(err, 400);
+    }
+    let orderRequestModel: OrderDetailsResponseModel = JSON.parse(event.body);
+    let headers = event.headers;
+    console.info('Request Body', event.body);
+    const OrderId = 'OR' + new Date().getTime().toString();
+    const now = new Date();
+    orderRequestModel.OrderStatus = ORDER_STATUS_LIST[0];
+    orderRequestModel.TraceId = headers['TraceId'];
+    orderRequestModel.OrderDate = now.toISOString();
+    orderRequestModel.CreatedDate = now.toISOString();
+    orderRequestModel.UpdatedAt = now.toISOString();
+    orderRequestModel.OrderId = OrderId;
+    const validate = ValidatePostOrder(orderRequestModel);
+    if (!validate.isValid) {
+      return ResponseBuilder(validate.message, 400);
+    }
+
+    let response = await SaveOrder(orderRequestModel);
+    console.info(
+      `Response Body: ${{
+        statusCode: 200,
+        body: JSON.stringify(response),
+      }} Method: POST Action:createBrand `
+    );
+    return ResponseBuilder(response, 200);
+  } catch (error: any) {
+    console.info(
+      `Error: Path: ${event.path}, Method:${
+        event.httpMethod
+      } Error:${JSON.stringify(error)}`
+    );
+    return ResponseBuilder(error, 500);
+  }
 };
-
-export const handler = middy(createBrand).use(cors());

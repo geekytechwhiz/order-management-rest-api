@@ -1,16 +1,47 @@
-import middy from "@middy/core";
-import cors from "@middy/http-cors";
-import { getOrderDetails } from "../services/getOrderDetails";
+import createError from 'http-errors';
+import { getOrderDetails } from '../services/getOrderDetails';
+import {
+  ValidateHeader,
+  ResponseBuilder,
+  MakeHeaderRequest,
+} from '../utils/helper';
 
-const getOrder = async(event:any, context:any)=> {
-const params = event.pathParameters.OrderId
+export const handler = async (event: any) => {
+  try {
+    console.info(
+      `Request Body: ${JSON.stringify(
+        event.body
+      )} Method: POST Action:GetOrder `
+    );
 
-let response = await getOrderDetails(params);
+    let validateResponse = ValidateHeader(event['headers']);
 
-return {
-  statusCode: 200,
-  body: JSON.stringify(response)
+    if (!validateResponse.Status) {
+      return ResponseBuilder(validateResponse, 400);
+    }
+
+    const headerRequest: any = MakeHeaderRequest(event['headers']);
+    console.info(
+      `Request: Path: ${event.path}, Method:${
+        event.httpMethod
+      } Headers:${JSON.stringify(event.headers)}, Body:${JSON.stringify(
+        event.body
+      )} TraceId: ${headerRequest.TraceId}`
+    );
+    const params = event.pathParameters.OrderId;
+    if (!params) {
+      const err = new createError.NotFound('Body Missing');
+      return ResponseBuilder(err, 400);
+    }
+    let response = await getOrderDetails(params);
+
+    return ResponseBuilder(response, 200);
+  } catch (error: any) {
+    console.info(
+      `Error: Path: ${event.path}, Method:${
+        event.httpMethod
+      } Error:${JSON.stringify(error)}`
+    );
+    return ResponseBuilder(error, 500);
+  }
 };
-
-};
-export const handler = middy(getOrder).use(cors())

@@ -1,10 +1,11 @@
 service:
-  name: orders-rest-api
+  name: oms-rest-api
 
-plugins: 
+plugins:
   - serverless-offline
-  - serverless-plugin-typescript  
   - serverless-domain-manager
+  - serverless-deployment-bucket
+  - serverless-webpack
 
 provider:
   name: aws
@@ -13,11 +14,14 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ap-south-1
   profile: serverless-admin
+  deploymentBucket:
+    name: oms-rest-api
+    serverSideEncryption: AES256
   environment:
-    ORDERS_TABLE_NAME: ${self:custom.OrdersTable.name} 
+    ORDERS_TABLE_NAME: ${self:custom.OrdersTable.name}
     ORDERS_BUCKET_NAME: ${self:custom.OrdersBucket.name}
-  iam: 
-   role:
+  iam:
+    role:
       statements:
         - Effect: Allow
           Action:
@@ -27,76 +31,122 @@ provider:
             - dynamodb:PutItem
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
-          Resource: arn:aws:dynamodb:ap-south-1:670022476151:table/Orders-dev 
+          Resource: arn:aws:dynamodb:ap-south-1:670022476151:table/Orders-dev
         - Effect: Allow
           Action:
             - s3:PutObject
-          Resource: arn:aws:s3:::${self:custom.OrdersBucket.name}/* 
+          Resource: arn:aws:s3:::${self:custom.OrdersBucket.name}/*
 
 resources:
   Resources:
     OrdersTable: ${file(infra/resources/dynamodb.yml):OrdersTable}
+    ReturnsTable: ${file(infra/resources/dynamodb.yml):ReturnsTable}
+    CancelledTable: ${file(infra/resources/dynamodb.yml):CancelledTable}
     OrdersBucket: ${file(infra/resources/s3.yml):OrdersBucket}
     OrdersBucketPolicy: ${file(infra/resources/s3.yml):OrdersBucketPolicy}
-    
+
 functions:
   orderHealthCheck:
     handler: app/handlers/health.handler
     events:
       - http:
           method: GET
-          path: /health
+          path: health
           cors: true
-  createorder:
+  create-order:
     handler: app/handlers/createOrder.handler
     events:
       - http:
           method: POST
-          path: /order
-          cors: true 
-  getorder:
+          path: order
+          cors: true
+  get-order:
     handler: app/handlers/getOrder.handler
     events:
       - http:
           method: GET
-          path: /order/{OrderId}
-          cors: true
-  getorderbybrand:
-    handler: app/handlers/getOrdersByBrand.handler
-    events:
-      - http:
-          method: GET
-          path: /order/brand/{BrandId}
-          cors: true
-  getorderbycustomer:
-    handler: app/handlers/getOrdersByCustomer.handler
-    events:
-      - http:
-          method: GET
-          path: /order/customer/{CustomerId}
+          path: order/{OrderId}
           cors: true
   patchOrderStatus:
     handler: app/handlers/updateOrderStatus.handler
     events:
       - http:
-          path: /order/updatStatus
+          path: order/
           method: patch
           cors: true
+  getOrder-by-brand:
+    handler: app/handlers/getOrdersByBrand.handler
+    events:
+      - http:
+          method: GET
+          path: order/brand/{BrandId}
+          cors: true
+  get-order-by-customer:
+    handler: app/handlers/getOrdersByCustomer.handler
+    events:
+      - http:
+          method: GET
+          path: order/customer/{CustomerId}
+          cors: true
 
-custom: 
+  create-return-orders:
+    handler: app/handlers/createReturns.handler
+    events:
+      - http:
+          method: POST
+          path: order/returns
+          cors: true
+  update-returns:
+    handler: app/handlers/updateReturns.handler
+    events:
+      - http:
+          method: PATCH
+          path: order/returns
+          cors: true
+  get-returns-by-brand:
+    handler: app/handlers/getReturnsByBrandId.handler
+    events:
+      - http:
+          method: GET
+          path: order/returns/brand/{BrandId}
+          cors: true
+  create-order-cancel:
+    handler: app/handlers/createOrderCancel.handler
+    events:
+      - http:
+          method: POST
+          path: order/cancel
+          cors: true
+  get-cancelled-orders-by-brand:
+    handler: app/handlers/getCancelledOrderByBrandId.handler
+    events:
+      - http:
+          method: GET
+          path: order/cancel/brand/{BrandId}
+          cors: true
+
+custom:
   stage: ${opt:stage, self:provider.stage}
-  domains: 
+  webpack:
+    keepOutputDirectory: true
+    includeModules:
+      packagePath: './package.json'
+    webpackConfig: 'webpack.config.js'
+    packager: 'npm'
+    excludeFiles: src/**/*.test.js
+
+  domains:
     dev: api.migobucks.com
-    # prod: api.migobucks.com 
+    # prod: api.migobucks.com
   OrdersTable:
     name: !Ref OrdersTable
-    arn: !GetAtt OrdersTable.Arn 
+    arn: !GetAtt OrdersTable.Arn
   OrdersBucket:
-    name: orders-rest-api-${self:provider.stage} 
+    name: orders-rest-api-${self:provider.stage}
   customDomain:
     domainName: ${self:custom.domains.${self:custom.stage}}
-    basePath: 'orders'
-    stage: dev 
-    createRoute53Record: true 
+    basePath: 'oms'
+    stage: dev
+    createRoute53Record: true
   bundle:
-    linting: false 
+    linting: false

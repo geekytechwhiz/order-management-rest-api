@@ -1,18 +1,18 @@
-import { UpdateOrderModel } from '../model/updateOrderStatusModel';
-import { editOrderStatus } from '../services/editOrderStatus';
+import { UpdateReturnRequestModel } from '../model/updateOrderStatusModel';
+import { editReturns } from '../services/editReturns';
 import {
   MakeHeaderRequest,
   ResponseBuilder,
   ValidateHeader,
 } from '../utils/helper';
-import { ValidateUpdateOrder } from '../utils/validator';
+import { ValidatePatchReturnOrder } from '../utils/validator';
 
 export const handler = async (event: any) => {
   try {
     console.info(
       `Request Body: ${JSON.stringify(
         event.body
-      )} Method: POST Action:CreateOrder `
+      )} Method: PATCH Action:UpdateReturnOrder `
     );
 
     let validateResponse = ValidateHeader(event['headers']);
@@ -31,16 +31,17 @@ export const handler = async (event: any) => {
     );
     console.info('Request Event', event);
     console.info('Request Body', event.body);
-    let orderStatusModel: UpdateOrderModel = JSON.parse(event.body);
-    const validate = ValidateUpdateOrder(orderStatusModel);
+    let requestModel: UpdateReturnRequestModel = JSON.parse(event.body);
+    const validate = ValidatePatchReturnOrder(requestModel);
     if (!validate.isValid) {
       return ResponseBuilder(validate.message, 400);
     }
     const now = new Date().toISOString();
     const result = await Promise.all(
-      orderStatusModel.Orders.map(async (model) => {
+      requestModel.Orders.map(async (model) => {
         try {
           const orderStatusRequest = {
+            ReturnOrderId: model.ReturnOrderId,
             OrderId: model.OrderId,
             CustomerId: model.CustomerId,
             OrderStatus: model.OrderStatus,
@@ -48,7 +49,7 @@ export const handler = async (event: any) => {
             LastUpdatedDate: now,
             TrackingId: model.TrackingId,
           };
-          return await editOrderStatus(orderStatusRequest);
+          return await editReturns(orderStatusRequest);
         } catch (err) {
           console.log(err);
           throw err;

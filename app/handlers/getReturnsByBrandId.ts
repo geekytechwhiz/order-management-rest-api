@@ -1,17 +1,17 @@
-import { getAllBrandOrders } from '../services/getAllBrandOrders';
-import {
-  ValidateHeader,
-  ResponseBuilder,
-  MakeHeaderRequest,
-} from '../utils/helper';
 import createError from 'http-errors';
+import { getAllBrandReturns } from '../services/getAllBrandReturns';
+import {
+  MakeHeaderRequest,
+  ResponseBuilder,
+  ValidateHeader,
+} from '../utils/helper';
 
 export const handler = async (event: any) => {
   try {
     console.info(
       `Request Body: ${JSON.stringify(
         event.body
-      )} Method: POST Action:getOrderByBrandId `
+      )} Method: POST Action:getReturnsByBrandId `
     );
 
     let validateResponse = ValidateHeader(event['headers']);
@@ -34,7 +34,7 @@ export const handler = async (event: any) => {
       return ResponseBuilder(err, 400);
     }
 
-    let response = await getAllBrandOrders(params);
+    let response = await getAllBrandReturns(params);
 
     return ResponseBuilder(response, 200);
   } catch (error: any) {
