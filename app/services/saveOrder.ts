@@ -18,10 +18,7 @@ export const SaveOrder = async (orderRequest: any) => {
 
     console.info('Save Brand Service End:', orderRequest);
 
-    return {
-      statusCode: 200,
-      body: orderRequest,
-    };
+    return orderRequest;
   } catch (error: any) {
     console.error(error);
     throw new createError.InternalServerError(error);

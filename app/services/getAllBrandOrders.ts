@@ -18,10 +18,7 @@ export const getAllBrandOrders = async (params) => {
       AWS.DynamoDB.Converter.unmarshall(el)
     );
 
-    return {
-      statusCode: 200,
-      body: converted,
-    };
+    return converted;
   } catch (error: any) {
     console.error(error);
     throw new createError.InternalServerError(error);

@@ -9,6 +9,7 @@ export const HeaderConstants = {
 };
 
 export const ORDER_STATUS_LIST = [
+  'PUBLISHED',
   'CANCELLED',
   'PENDING_LABEL',
   'DELIVERED',
@@ -16,6 +17,8 @@ export const ORDER_STATUS_LIST = [
   'IN_TRANSIT',
   'READY_TO_DISPATCH',
 ];
+
+export const ORDER_STATUS_PENDING_LABEL = 'PENDING_LABEL';
 
 export const MANDATORY_FIELD_POST_ORDER = [
   'BrandId',

@@ -1,7 +1,7 @@
 import createError from 'http-errors';
 import { OrderDetailsResponseModel } from '../model/orderDataModel';
 import { SaveOrder } from '../services/saveOrder';
-import { ORDER_STATUS_LIST } from '../utils/constants';
+import { ORDER_STATUS_PENDING_LABEL } from '../utils/constants';
 import {
   MakeHeaderRequest,
   ResponseBuilder,
@@ -40,7 +40,7 @@ export const handler = async (event: any) => {
     console.info('Request Body', event.body);
     const OrderId = 'OR' + new Date().getTime().toString();
     const now = new Date();
-    orderRequestModel.OrderStatus = ORDER_STATUS_LIST[0];
+    orderRequestModel.OrderStatus = ORDER_STATUS_PENDING_LABEL;
     orderRequestModel.TraceId = headers['TraceId'];
     orderRequestModel.OrderDate = now.toISOString();
     orderRequestModel.CreatedDate = now.toISOString();

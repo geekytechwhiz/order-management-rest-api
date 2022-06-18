@@ -18,10 +18,7 @@ export const SaveOrderCancel = async (orderRequest: any) => {
 
     console.info('Save Order :', orderRequest);
 
-    return {
-      statusCode: 200,
-      body: orderRequest,
-    };
+    return orderRequest;
   } catch (error: any) {
     console.error(error);
     throw new createError.InternalServerError(error);

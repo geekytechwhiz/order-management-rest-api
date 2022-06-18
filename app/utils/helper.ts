@@ -1,11 +1,13 @@
 import { HeaderConstants } from './constants';
 
-export const ResponseBuilder = (data, status = 200) => {
-  if (!data) {
-    data = [];
-  }
-  return {
+export const ResponseBuilder = (data: any, status = 200) => {
+  const response = {
     statusCode: status,
+    data: data || {},
+  };
+
+  return {
+    statusCode: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': false,
@@ -13,7 +15,7 @@ export const ResponseBuilder = (data, status = 200) => {
         'Content-Type, Custom-Header,Access-Control-Allow-Headers,x-mibapi-customerid, X-MIBAPI-CustomerID,X-MIBAPI-CustomerType,x-mibapi-customertype,x-mibapi-token,X-MIBAPI-Token,x-mibapi-source,X-MIBAPI-Source,Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(response || {}),
   };
 };
 
