@@ -16,8 +16,5 @@ export const getAllCustomerOrders = async (params) => {
     console.error(error);
     throw new createError.InternalServerError(error);
   }
-  return {
-    statusCode: 200,
-    body: converted,
-  };
+  return converted;
 };
