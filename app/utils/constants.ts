@@ -1,6 +1,7 @@
 export const ORDERS_TABLE = 'Orders-dev';
 export const RETURNS_TABLE = 'Returns-dev';
 export const CANCELLED_TABLE = 'Cancelled-dev';
+export const CART_TABLE = 'Cart-dev';
 export const HeaderConstants = {
   CustomerID: 'X-MIBAPI-CustomerID',
   CustomerType: 'X-MIBAPI-CustomerType',
@@ -53,6 +54,13 @@ export const MANDATORY_FIELD_POST_CANCEL_ORDER = [
   'OrderStatus',
   'CustomerId',
   'OrderId',
+];
+
+export const MANDATORY_FIELD_POST_CART = [
+  'ProductName',
+  'CustomerId',
+  'Quantity',
+  'SellingPrice',
 ];
 
 export const ORDER_STATUS_RETURN = 'RETURNED';

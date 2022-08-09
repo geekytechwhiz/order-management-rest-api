@@ -1,6 +1,7 @@
 import { UpdateOrderModel } from '../model/updateOrderStatusModel';
 import {
   MANDATORY_FIELD_POST_CANCEL_ORDER,
+  MANDATORY_FIELD_POST_CART,
   MANDATORY_FIELD_POST_ORDER,
   MANDATORY_FIELD_POST_RETURN_ORDER,
   MANDATORY_FIELD_UPDATE_ORDER,
@@ -163,6 +164,26 @@ export const ValidatePatchReturnOrder = (returnOrders) => {
     }
   });
 
+  if (errors.length > 0) {
+    response = {
+      isValid: false,
+      message: `Required fields ${[...errors]}`,
+    };
+  }
+  return response;
+};
+
+export const ValidatePostCart = (modelObj) => {
+  let response = {
+    isValid: true,
+    message: '',
+  };
+  let errors: any = [];
+  MANDATORY_FIELD_POST_CART.forEach((x) => {
+    if (modelObj[x] == null || modelObj[x] === '') {
+      errors.push(x);
+    }
+  });
   if (errors.length > 0) {
     response = {
       isValid: false,

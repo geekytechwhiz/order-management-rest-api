@@ -16,15 +16,17 @@ OrdersTable:
         AttributeType: S
       - AttributeName: CreatedDate
         AttributeType: S
+      - AttributeName: UserType
+        AttributeType: S
     KeySchema:
-      - AttributeName: OrderId
-        KeyType: HASH
       - AttributeName: CustomerId
+        KeyType: HASH
+      - AttributeName: OrderId
         KeyType: RANGE
     LocalSecondaryIndexes:
       - IndexName: OrderIdAndOrderStatus
         KeySchema:
-          - AttributeName: OrderId
+          - AttributeName: CustomerId
             KeyType: HASH
           - AttributeName: OrderStatus
             KeyType: RANGE
@@ -32,7 +34,7 @@ OrdersTable:
           ProjectionType: ALL
       - IndexName: OrderIdAndProductId
         KeySchema:
-          - AttributeName: OrderId
+          - AttributeName: CustomerId
             KeyType: HASH
           - AttributeName: ProductId
             KeyType: RANGE
@@ -40,7 +42,7 @@ OrdersTable:
           ProjectionType: ALL
       - IndexName: OrderIdAndCreatedDate
         KeySchema:
-          - AttributeName: OrderId
+          - AttributeName: CustomerId
             KeyType: HASH
           - AttributeName: CreatedDate
             KeyType: RANGE
@@ -48,17 +50,17 @@ OrdersTable:
           ProjectionType: ALL
       - IndexName: OrderIdAndBrandId
         KeySchema:
-          - AttributeName: OrderId
+          - AttributeName: CustomerId
             KeyType: HASH
           - AttributeName: BrandId
             KeyType: RANGE
         Projection:
           ProjectionType: ALL
-      - IndexName: OrderIdAndCustomerId
+      - IndexName: UserTypeAndCustomerId
         KeySchema:
-          - AttributeName: OrderId
-            KeyType: HASH
           - AttributeName: CustomerId
+            KeyType: HASH
+          - AttributeName: UserType
             KeyType: RANGE
         Projection:
           ProjectionType: ALL
@@ -82,14 +84,14 @@ ReturnsTable:
       - AttributeName: ReturnDate
         AttributeType: S
     KeySchema:
-      - AttributeName: ReturnOrderId
-        KeyType: HASH
       - AttributeName: CustomerId
+        KeyType: HASH
+      - AttributeName: ReturnOrderId
         KeyType: RANGE
     LocalSecondaryIndexes:
       - IndexName: OrderIdAndOrderStatus
         KeySchema:
-          - AttributeName: ReturnOrderId
+          - AttributeName: CustomerId
             KeyType: HASH
           - AttributeName: OrderStatus
             KeyType: RANGE
@@ -97,7 +99,7 @@ ReturnsTable:
           ProjectionType: ALL
       - IndexName: OrderIdAndProductId
         KeySchema:
-          - AttributeName: ReturnOrderId
+          - AttributeName: CustomerId
             KeyType: HASH
           - AttributeName: ProductId
             KeyType: RANGE
@@ -105,7 +107,7 @@ ReturnsTable:
           ProjectionType: ALL
       - IndexName: OrderIdAndCreatedDate
         KeySchema:
-          - AttributeName: ReturnOrderId
+          - AttributeName: CustomerId
             KeyType: HASH
           - AttributeName: ReturnDate
             KeyType: RANGE
@@ -113,7 +115,7 @@ ReturnsTable:
           ProjectionType: ALL
       - IndexName: OrderIdAndBrandId
         KeySchema:
-          - AttributeName: ReturnOrderId
+          - AttributeName: CustomerId
             KeyType: HASH
           - AttributeName: BrandId
             KeyType: RANGE
@@ -121,9 +123,9 @@ ReturnsTable:
           ProjectionType: ALL
       - IndexName: OrderIdAndCustomerId
         KeySchema:
-          - AttributeName: ReturnOrderId
-            KeyType: HASH
           - AttributeName: CustomerId
+            KeyType: HASH
+          - AttributeName: ReturnOrderId
             KeyType: RANGE
         Projection:
           ProjectionType: ALL
@@ -146,14 +148,14 @@ CancelledTable:
       - AttributeName: CancelledDate
         AttributeType: S
     KeySchema:
-      - AttributeName: OrderId
-        KeyType: HASH
       - AttributeName: CustomerId
+        KeyType: HASH
+      - AttributeName: OrderId
         KeyType: RANGE
     LocalSecondaryIndexes:
       - IndexName: OrderIdAndOrderStatus
         KeySchema:
-          - AttributeName: OrderId
+          - AttributeName: CustomerId
             KeyType: HASH
           - AttributeName: OrderStatus
             KeyType: RANGE
@@ -161,7 +163,7 @@ CancelledTable:
           ProjectionType: ALL
       - IndexName: OrderIdAndProductId
         KeySchema:
-          - AttributeName: OrderId
+          - AttributeName: CustomerId
             KeyType: HASH
           - AttributeName: ProductId
             KeyType: RANGE
@@ -169,7 +171,7 @@ CancelledTable:
           ProjectionType: ALL
       - IndexName: OrderIdAndCancelledDate
         KeySchema:
-          - AttributeName: OrderId
+          - AttributeName: CustomerId
             KeyType: HASH
           - AttributeName: CancelledDate
             KeyType: RANGE
@@ -177,7 +179,7 @@ CancelledTable:
           ProjectionType: ALL
       - IndexName: OrderIdAndBrandId
         KeySchema:
-          - AttributeName: OrderId
+          - AttributeName: CustomerId
             KeyType: HASH
           - AttributeName: BrandId
             KeyType: RANGE
@@ -185,9 +187,55 @@ CancelledTable:
           ProjectionType: ALL
       - IndexName: OrderIdAndCustomerId
         KeySchema:
-          - AttributeName: OrderId
-            KeyType: HASH
           - AttributeName: CustomerId
+            KeyType: HASH
+          - AttributeName: OrderId
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+CartTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: Cart-${self:provider.stage}
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: CartId
+        AttributeType: S
+      - AttributeName: ProductId
+        AttributeType: S
+      - AttributeName: CustomerId
+        AttributeType: S
+      - AttributeName: CreatedDate
+        AttributeType: S
+      - AttributeName: BrandId
+        AttributeType: S
+    KeySchema:
+      - AttributeName: CustomerId
+        KeyType: HASH
+      - AttributeName: CartId
+        KeyType: RANGE
+    LocalSecondaryIndexes:
+      - IndexName: CustomerIdAndProductId
+        KeySchema:
+          - AttributeName: CustomerId
+            KeyType: HASH
+          - AttributeName: ProductId
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: CustomerIdAndCreatedDate
+        KeySchema:
+          - AttributeName: CustomerId
+            KeyType: HASH
+          - AttributeName: CreatedDate
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: CustomerIdAndBrandId
+        KeySchema:
+          - AttributeName: CustomerId
+            KeyType: HASH
+          - AttributeName: BrandId
             KeyType: RANGE
         Projection:
           ProjectionType: ALL

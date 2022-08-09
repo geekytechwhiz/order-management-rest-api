@@ -51,7 +51,8 @@ export class DeliveryAddress {
   City: string;
   District: string;
 }
-export class ProductDetails {
+export class CartDetails {
+  CartId: string;
   ProductName: string;
   Size: string;
   ProductCategory: string;
@@ -61,6 +62,11 @@ export class ProductDetails {
   MRP: number;
   BrandId: string;
   SellingPrice: number;
+  Url: string;
+  StockStatus: string;
+  Model: string;
+  TraceId: string;
+  CustomerId: string;
 }
 export class CustomerDetails {
   Mobile: number;

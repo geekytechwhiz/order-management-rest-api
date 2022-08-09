@@ -42,6 +42,7 @@ resources:
     OrdersTable: ${file(infra/resources/dynamodb.yml):OrdersTable}
     ReturnsTable: ${file(infra/resources/dynamodb.yml):ReturnsTable}
     CancelledTable: ${file(infra/resources/dynamodb.yml):CancelledTable}
+    CartTable: ${file(infra/resources/dynamodb.yml):CartTable}
     OrdersBucket: ${file(infra/resources/s3.yml):OrdersBucket}
     OrdersBucketPolicy: ${file(infra/resources/s3.yml):OrdersBucketPolicy}
 
@@ -124,6 +125,20 @@ functions:
           method: GET
           path: order/cancel/brand/{BrandId}
           cors: true
+  get-cart:
+    handler: app/handlers/getCart.handler
+    events:
+      - http:
+          method: GET
+          path: cart/{CustomerId}
+          cors: true
+  post-item-to-cart:
+    handler: app/handlers/postCart.handler
+    events:
+      - http:
+          method: POST
+          path: cart/{CustomerId}
+          cors: true
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -136,7 +151,7 @@ custom:
     excludeFiles: src/**/*.test.js
 
   domains:
-    dev: api.migobucks.com
+    dev: api.dev.migobucks.com
     # prod: api.migobucks.com
   OrdersTable:
     name: !Ref OrdersTable
